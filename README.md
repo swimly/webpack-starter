@@ -105,3 +105,95 @@ npm run dev
   "prod": "webpack -p"
 },
 ```
+### 2、webpack plugins
+在dist目录中创建 index.html，并且引入打包好的js文件
+``` html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <p>content goes here</p>
+  <script src="./app.bundle.js"></script>
+</body>
+</html>
+```
+不出意外就会看到如下的页面！
+
+<img src="book/01.jpg"/>
+
+当然，如果我们不想自己手动去在dist目录创建html文件，这时候就可以利用webpack的plugin来帮我们创建。
+``` bash
+npm i html-webpack-plugin --save-dev
+```
+修改webpack.config.js如下所示，并且删除dist目录的index.html.
+``` javascript
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path')
+module.exports = {
+  entry: './src/app.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.bundle.js'
+  },
+  plugins: [new HtmlWebpackPlugin()]
+}
+```
+然后再次运行
+``` bash
+npm run dev
+```
+这时候你会看到dist目录里面已经自动生成一个index.html文件
+``` html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Webpack App</title>
+  </head>
+  <body>
+  <script type="text/javascript" src="app.bundle.js"></script></body>
+</html>
+```
+如果我们想要根据自己的模板来创建html呢，修改webpack.config.js如下所示：
+``` javascript
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path')
+module.exports = {
+  entry: './src/app.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.bundle.js'
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'myApp',
+      minify: {
+        collapseWhitespace: true //生成被压缩的html文件
+      },
+      hash: true,
+      template: './src/index.html', // Load a custom template (ejs by default see the FAQ for details)
+    })
+  ]
+}
+```
+在src目录添加index.html
+``` html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+  <p>This is my template</p>
+</body>
+</html>
+```
+这时候再次打包，会根据我们创建的模板来生成html文件。
