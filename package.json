@@ -1,0 +1,24 @@
+{
+  "name": "webpack-starter",
+  "version": "1.0.0",
+  "description": "``` bash\r npm init\r ```\r 一路回车即可！最终会生成package.json文件，如下所示：\r ``` json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack -d --watch",
+    "prod": "webpack -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swimly/webpack-starter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/swimly/webpack-starter/issues"
+  },
+  "homepage": "https://github.com/swimly/webpack-starter#readme",
+  "devDependencies": {
+    "webpack": "^2.3.2"
+  }
+}
