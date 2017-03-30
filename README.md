@@ -197,3 +197,104 @@ module.exports = {
 </html>
 ```
 这时候再次打包，会根据我们创建的模板来生成html文件。
+### 3、css-loader、sass-loader为项目添砖加瓦。
+#### css-loader
+``` bash
+npm install css-loader style-loader --save-dev
+```
+在src目录新建app.css
+``` css
+html,body{
+  height:100%;
+  margin:0;
+  background:green;
+  color:#fff;
+  font-size:20px;
+}
+```
+修改webpack.config.js添加如下
+``` javascript
+module: {
+    rules: [
+      {test: /\.css$/, loaders: 'style-loader!css-loader'}
+      // {test: /\.css$/, use: ['style-loader', 'css-loader']}
+    ]
+  },
+```
+修改app.js
+``` javascript
+import './app.css'
+console.log('hello from app.js again')
+```
+#### sass-loader
+``` bash
+npm install --save-dev sass-loader node-sass
+```
+修改webpack.config.js
+``` javascript
+module: {
+    rules: [
+      {test: /\.css$/, use: ['style-loader', 'css-loader']},
+      {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']}
+    ]
+  },
+```
+修改app.js
+``` javascript
+import './main.scss'
+console.log('hello from app.js again')
+```
+在src目录新建main.scss
+``` scss
+body{background:#ff0;}
+```
+<img src="book/03.jpg"/>
+<img src="book/02.jpg"/>
+从上图我们可以看出，这样打包的样式最终都是直接加在页面的head里面，但是我们如果想以文件的方式引入进去又该如何？
+
+``` bash
+npm install --save-dev extract-text-webpack-plugin
+```
+修改webpack.config.js
+``` javascript
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+var path = require('path')
+
+module.exports = {
+  entry: './src/app.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.bundle.js'
+  },
+  module: {
+    rules: [
+      {test: /\.css$/, use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader']
+      })},
+      {test: /\.scss$/, use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'sass-loader']
+      })}
+    ]
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename:  (getPath) => {
+        return getPath('css/[name].css').replace('css/js', 'css');
+      },
+      allChunks: true
+    }),
+    new HtmlWebpackPlugin({
+      title: 'myApp',
+      minify: {
+        collapseWhitespace: true //生成被压缩的html文件
+      },
+      hash: true,
+      template: './src/index.html', // Load a custom template (ejs by default see the FAQ for details)
+    })
+  ]
+}
+```
+详情请参考：[https://www.npmjs.com/package/extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin)
