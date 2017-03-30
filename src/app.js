@@ -1,3 +1,3 @@
 import './main.scss'
 import './app.css'
-console.log('hello from app.js again')
+console.log('hello from webpack-dev-server!')

@@ -1,5 +1,5 @@
 # webpack-starter
-### 1、项目初始化
+#### 1、项目初始化
 ``` bash
 npm init
 ```
@@ -105,7 +105,7 @@ npm run dev
   "prod": "webpack -p"
 },
 ```
-### 2、webpack plugins
+#### 2、webpack plugins
 在dist目录中创建 index.html，并且引入打包好的js文件
 ``` html
 <!DOCTYPE html>
@@ -197,8 +197,8 @@ module.exports = {
 </html>
 ```
 这时候再次打包，会根据我们创建的模板来生成html文件。
-### 3、css-loader、sass-loader为项目添砖加瓦。
-#### css-loader
+#### 3、css-loader、sass-loader为项目添砖加瓦。
+##### css-loader
 ``` bash
 npm install css-loader style-loader --save-dev
 ```
@@ -226,7 +226,7 @@ module: {
 import './app.css'
 console.log('hello from app.js again')
 ```
-#### sass-loader
+##### sass-loader
 ``` bash
 npm install --save-dev sass-loader node-sass
 ```
@@ -298,3 +298,31 @@ module.exports = {
 }
 ```
 详情请参考：[https://www.npmjs.com/package/extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin)
+#### 4、webpack-dev-server
+``` bash
+npm i webpack-dev-server -D
+```
+修改package.json如下：
+``` json
+"scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "dev": "webpack-dev-server", // 这里是刚修改的
+  "prod": "webpack -p"
+},
+```
+然后
+``` bash
+npm run dev
+```
+就可以启动这个服务器了！
+<img src="book/04.jpg"/>
+修改webpack.config.js
+``` javascript
+devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 8080,
+    stats: 'errors-only',
+    open: true // 启动后自动打开浏览器窗口
+  },
+```

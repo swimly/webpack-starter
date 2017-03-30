@@ -22,6 +22,13 @@ module.exports = {
       })}
     ]
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 8080,
+    stats: 'errors-only',
+    open: true // 启动后自动打开浏览器窗口
+  },
   plugins: [
     new ExtractTextPlugin({
       filename:  (getPath) => {
