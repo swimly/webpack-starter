@@ -3,10 +3,13 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path')
 
 module.exports = {
-  entry: './src/app.js',
+  entry: {
+    app: './src/app.js',
+    contact: './src/contact.js'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'app.bundle.js'
+    filename: '[name].bundle.js'
   },
   module: {
     rules: [
@@ -38,11 +41,20 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       title: 'myApp',
-      minify: {
-        collapseWhitespace: true //生成被压缩的html文件
-      },
+      // minify: {
+      //   collapseWhitespace: true //生成被压缩的html文件
+      // },
       hash: true,
+      filename: './index.html',
+      excludeChunks: ['contact'],
       template: './src/index.html', // Load a custom template (ejs by default see the FAQ for details)
+    }),
+    new HtmlWebpackPlugin({
+      title: 'contact',
+      hash: true,
+      filename: 'contact.html',
+      chunks: ['contact'],
+      template: './src/contact.html'
     })
   ]
 }

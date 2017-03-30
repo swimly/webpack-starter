@@ -316,13 +316,88 @@ npm run dev
 ```
 就可以启动这个服务器了！
 <img src="book/04.jpg"/>
-修改webpack.config.js
+修改webpack.config.js，添加如下
 ``` javascript
 devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 8080,
-    stats: 'errors-only',
-    open: true // 启动后自动打开浏览器窗口
-  },
+  contentBase: path.join(__dirname, 'dist'),
+  compress: true,
+  port: 8080,
+  stats: 'errors-only',
+  open: true // 启动后自动打开浏览器窗口
+},
 ```
+#### 5、多模块的使用
+rimraf清理项目
+``` bash
+npm i -D rimraf
+```
+package.json修改如下：
+``` json
+"scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "dev": "webpack-dev-server",
+  "prod": "npm run clean && webpack -p",
+  "clean": "rimraf ./dist/*"
+}
+```
+这样的话会在每次打包的时候将dist目录清空，然后重新生成，以确保dist目录没有多余的无用文件。
+一般情况一个项目肯定不止一个页面吧，解析来创建contact模块，修改webpack.config.js,在plugins中添加：
+``` javascript
+new HtmlWebpackPlugin({
+  title: 'contact',
+  hash: true,
+  filename: 'contact.html',
+  template: './src/contact.html'
+})
+```
+并且在src根目录创建一个新的hmtl模板contact.html
+``` html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+  <p>This is contact!</p>
+</body>
+</html>
+```
+在src根目录新增contact.js
+``` javascript
+console.log('contact page')
+```
+由于有多个入口文件，修改webpack.config.js的entry和output
+``` javascript
+entry: {
+  app: './src/app.js',
+  contact: './src/contact.js'
+},
+output: {
+  path: path.resolve(__dirname, 'dist'),
+  filename: '[name].bundle.js'
+},
+```
+<img src="book/05.jpg"/>
+这时候再次启动服务器，我们会发现，在index中contact.js也被调用了，这可不是我们想要的，我们只想contact.js在contact页面中被调用，修改webpack.config.js
+
+``` javascript
+new HtmlWebpackPlugin({
+  title: 'myApp',
+  hash: true,
+  filename: './index.html',
+  excludeChunks: ['contact'], //新增
+  template: './src/index.html',
+}),
+new HtmlWebpackPlugin({
+  title: 'contact',
+  hash: true,
+  filename: 'contact.html',
+  chunks: ['contact'], //新增
+  template: './src/contact.html'
+})
+```
+<img src="book/06.jpg"/>
+这样一来，我们两个模块就互不干扰了！
