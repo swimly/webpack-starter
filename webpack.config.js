@@ -2,6 +2,21 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path')
 var webpack = require('webpack')
+var isProduction = process.env.NODE_ENV === 'production';
+var scssDev = ['style-loader', 'css-loader', 'sass-loader'];
+var cssDev = ['style-loader', 'css-loader'];
+var scssProd = ExtractTextPlugin.extract({
+  fallback: 'style-loader',
+  loader: ['css-loader', 'sass-loader'],
+  publicPath: '/dist'
+});
+var cssProd = ExtractTextPlugin.extract({
+  fallback: 'style-loader',
+  loader: ['css-loader'],
+  publicPath: '/dist'
+});
+var scssConfig = isProduction ? scssProd : scssDev;
+var cssConfig = isProduction ? cssProd : cssDev;
 
 module.exports = {
   entry: {
@@ -14,8 +29,8 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.css$/, use: ['style-loader', 'css-loader']},
-      {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
+      {test: /\.css$/, use: cssConfig},
+      {test: /\.scss$/, use: scssConfig},
       {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
     ]
   },
@@ -32,7 +47,7 @@ module.exports = {
       filename:  (getPath) => {
         return getPath('css/[name].css').replace('css/js', 'css');
       },
-      disable: true,
+      disable: !isProduction,
       allChunks: true
     }),
     new HtmlWebpackPlugin({
