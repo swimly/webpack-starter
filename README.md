@@ -401,3 +401,87 @@ new HtmlWebpackPlugin({
 ```
 <img src="book/06.jpg"/>
 这样一来，我们两个模块就互不干扰了！
+
+#### 6、use pug
+自动生成html文件可以用html作为模板，除此之外我们还可以写jade语法，这个就需要利用pug了。
+我们把src/index.html改成index.pug
+
+``` pug
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    script(type='text/javascript').
+      if (foo) bar(1 + 5)
+  body
+    h1 Pug - node template engine
+    #container.col
+      if youAreUsingPug
+        p You are amazing
+      else
+        p Get on it!
+      p.
+        Pug is a terse and simple templating language with a
+        strong focus on performance and powerful features.
+```
+webpack.config.js
+``` javascript
+new HtmlWebpackPlugin({
+  title: 'myApp',
+  // minify: {
+  //   collapseWhitespace: true //生成被压缩的html文件
+  // },
+  hash: true,
+  filename: './index.html',
+  excludeChunks: ['contact'],
+  template: './src/index.pug', // Load a custom template (ejs by default see the FAQ for details)
+}),
+```
+<img src="book/07.jpg"/>
+这时候启动我们只会看到一长串字符串，还需要安装pug-html-loader 和 pug
+```bash
+npm i -D pug pug-html-loader
+```
+当然还需要在webpack.config.js中添加一条loader
+
+``` javascript
+{test: /\.pug$/, use: 'pug-html-loader'}
+```
+<img src="book/08.jpg"/>
+然而事实并不如人所愿，还是有一堆bug，经过多方折腾，我们还需要安装html-loader，说干就干：
+``` bash
+npm i -D html-loader
+```
+修改webpack.config.js
+``` javascript
+{test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
+```
+<img src="book/09.jpg"/>
+终于，我们见到我们想要的页面了！
+接下来在src下创建 includes/header.pug
+
+``` pug
+<h1>this is the header</h1>
+```
+修改index.pug
+```
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    script(type='text/javascript').
+      if (foo) bar(1 + 5)
+  body
+    include includes/header.pug // 新增
+    h1 Pug - node template engine
+    #container.col
+      if youAreUsingPug
+        p You are amazing
+      else
+        p Get on it!
+      p.
+        Pug is a terse and simple templating language with a
+        strong focus on performance and powerful features.
+```
+<img src="book/10.jpg"/>
+这样，header就被直接引用进来了，是不是很方便呢，瞬间有种写node的赶脚有木有！

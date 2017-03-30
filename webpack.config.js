@@ -22,7 +22,8 @@ module.exports = {
         fallback: 'style-loader',
         use: ['css-loader', 'sass-loader'],
         publicPath: '/dist'
-      })}
+      })},
+      {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
     ]
   },
   devServer: {
@@ -47,7 +48,7 @@ module.exports = {
       hash: true,
       filename: './index.html',
       excludeChunks: ['contact'],
-      template: './src/index.html', // Load a custom template (ejs by default see the FAQ for details)
+      template: './src/index.pug', // Load a custom template (ejs by default see the FAQ for details)
     }),
     new HtmlWebpackPlugin({
       title: 'contact',
