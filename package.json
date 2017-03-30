@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server",
-    "prod": "npm run clean && webpack -p",
+    "dev": "cross-env NODE_ENV=dev webpack-dev-server",
+    "prod": "npm run clean && cross-env NODE_ENV=production webpack -p",
     "clean": "rimraf ./dist/*"
   },
   "repository": {
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/swimly/webpack-starter#readme",
   "devDependencies": {
+    "cross-env": "^3.2.4",
     "css-loader": "^0.27.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "html-loader": "^0.4.5",

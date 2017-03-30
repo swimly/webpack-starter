@@ -1,5 +1,2 @@
-html,body{
-  height:100%;
-  margin:0;
-  font-size:20px;
-}
+h1,h2{font-weight:normal;font-size:30px;color:#F2F7FA;text-align:center;}
+p{font-size:18px;}

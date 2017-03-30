@@ -569,3 +569,97 @@ module.exports = {
 
 <img src="book/12.gif"/>
 #### 8、生产和发布
+
+修改package.json
+``` json
+"scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "dev": "webpack-dev-server",
+  "prod": "npm run clean && NODE_ENV=production webpack -p",
+  "clean": "rimraf ./dist/*"
+},
+```
+webpack.config.js
+``` javascript
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+var path = require('path')
+var webpack = require('webpack')
+var isProd = process.env.NODE_ENV = 'production';
+var cssDev = ['style-loader', 'css-loader', 'sass-loader'];
+var cssProd = ExtractTextPlugin.extract({
+  fallback: 'style-loader',
+  loader: ['css-loader', 'sass-loader'],
+  publicPath: '/dist'
+})
+var cssConfig = isProd ? cssProd : cssDev;
+
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    contact: './src/contact.js'
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js'
+  },
+  module: {
+    rules: [
+      {test: /\.css$/, use: ['style-loader', 'css-loader']},
+      {test: /\.scss$/, use: cssConfig},
+      {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
+    ]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 8080,
+    stats: 'errors-only',
+    hot: true,
+    open: true // 启动后自动打开浏览器窗口
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename:  (getPath) => {
+        return getPath('css/[name].css').replace('css/js', 'css');
+      },
+      disable: !isProd,
+      allChunks: true
+    }),
+    new HtmlWebpackPlugin({
+      title: 'myApp',
+      // minify: {
+      //   collapseWhitespace: true //生成被压缩的html文件
+      // },
+      hash: true,
+      filename: './index.html',
+      excludeChunks: ['contact'],
+      template: './src/index.pug', // Load a custom template (ejs by default see the FAQ for details)
+    }),
+    new HtmlWebpackPlugin({
+      title: 'contact',
+      hash: true,
+      filename: 'contact.html',
+      chunks: ['contact'],
+      template: './src/contact.html'
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  ]
+}
+```
+这时候
+``` bash
+npm run prod
+//会出现如下错误：
+'NODE_ENV' 不是内部或外部命令，也不是可运行的程序
+或批处理文件。
+```
+一般如果你是mac，这样写是没有问题的，如果你是跟小编一样的穷逼还用着windows系统这样可就行不通了。
+``` bash
+npm install --save-dev cross-env
+```
+然后修改package.json
+```
+"prod": "npm run clean && cross-env NODE_ENV=production webpack -p",
+```
