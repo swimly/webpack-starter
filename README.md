@@ -744,3 +744,32 @@ module.exports = {
 最终效果如下：
 
 <img src="book/13.gif"/>
+
+#### 10、打包图片
+```
+npm i -D file-loader
+```
+```javascript
+// add
+{test: /\.jpg$/, use: 'file-loader'}
+```
+然后你就可以像往常一样随便的引入图片！
+在html中要按如下使用：
+```
+<img src="<%= require('./img/bg.jpg')%>" alt="">
+```
+```
+npm i -D image-webpack-loader
+
+```
+```
+{
+  test: /\.(png|jpe?g|svg|gif|webp)$/,
+  use: [
+    'file-loader?name=images/[name].[ext]',
+    // 'file-loader?name=[hash:6].[ext]&publicPath=images/',
+    'image-webpack-loader?{optimizationLevel: 7, interlaced: false, pngquant:{quality: "65-90", speed: 4}, mozjpeg: {quality: 65}}'
+  ]
+}
+```
+具体参考：[https://www.npmjs.com/package/image-webpack-loader](https://www.npmjs.com/package/image-webpack-loader)

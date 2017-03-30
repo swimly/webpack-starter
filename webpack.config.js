@@ -31,7 +31,15 @@ module.exports = {
     rules: [
       {test: /\.css$/, use: cssConfig},
       {test: /\.scss$/, use: scssConfig},
-      {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
+      {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']},
+      {
+        test: /\.(png|jpe?g|svg|gif|webp)$/,
+        use: [
+          'file-loader?name=images/[name].[ext]',
+          // 'file-loader?name=[hash:6].[ext]&publicPath=images/',
+          'image-webpack-loader?{optimizationLevel: 7, interlaced: false, pngquant:{quality: "65-90", speed: 4}, mozjpeg: {quality: 65}}'
+        ]
+      }
     ]
   },
   devServer: {
@@ -58,7 +66,7 @@ module.exports = {
       hash: true,
       filename: './index.html',
       excludeChunks: ['contact'],
-      template: './src/index.pug', // Load a custom template (ejs by default see the FAQ for details)
+      template: './src/index.html', // Load a custom template (ejs by default see the FAQ for details)
     }),
     new HtmlWebpackPlugin({
       title: 'contact',
