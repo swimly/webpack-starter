@@ -485,3 +485,87 @@ html(lang="en")
 ```
 <img src="book/10.jpg"/>
 这样，header就被直接引用进来了，是不是很方便呢，瞬间有种写node的赶脚有木有！
+
+#### 7、css,js局部刷新
+伴随这项目越来越庞大，每次保存，项目都会重新打包并且自动刷新页面，虽说这样已经很爽了，但是中间那段枯燥无味的等待你是否受得了。记得刚开始接触局部刷新这个词是从ajax开始的，现在就来体验一把在开发过程中的页面局部刷新给你带来的快感。
+修改我们的webpack.config.js
+``` javascript
+// 页面上面加上webpack的引用
+var webpack = require('webpack')
+// 在devServer加上
+hot: true,
+// 在plugin中加上如下两句：
+new webpack.HotModuleReplacementPlugin(),
+new webpack.NamedModulesPlugin()
+//module改成如下：
+rules: [
+  {test: /\.css$/, use: ['style-loader', 'css-loader']},
+  {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
+  {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
+]
+```
+最终的webpack.config.js如下所示：
+``` javascript
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+var path = require('path')
+var webpack = require('webpack')
+
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    contact: './src/contact.js'
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js'
+  },
+  module: {
+    rules: [
+      {test: /\.css$/, use: ['style-loader', 'css-loader']},
+      {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
+      {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
+    ]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 8080,
+    stats: 'errors-only',
+    hot: true,
+    open: true // 启动后自动打开浏览器窗口
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename:  (getPath) => {
+        return getPath('css/[name].css').replace('css/js', 'css');
+      },
+      disable: true,
+      allChunks: true
+    }),
+    new HtmlWebpackPlugin({
+      title: 'myApp',
+      // minify: {
+      //   collapseWhitespace: true //生成被压缩的html文件
+      // },
+      hash: true,
+      filename: './index.html',
+      excludeChunks: ['contact'],
+      template: './src/index.pug', // Load a custom template (ejs by default see the FAQ for details)
+    }),
+    new HtmlWebpackPlugin({
+      title: 'contact',
+      hash: true,
+      filename: 'contact.html',
+      chunks: ['contact'],
+      template: './src/contact.html'
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  ]
+}
+```
+这时候再启动项目
+
+<img src="book/12.gif"/>
+#### 8、生产和发布

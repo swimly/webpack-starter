@@ -1,6 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
   entry: {
@@ -13,16 +14,8 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.css$/, use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: ['css-loader'],
-        publicPath: '/dist'
-      })},
-      {test: /\.scss$/, use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: ['css-loader', 'sass-loader'],
-        publicPath: '/dist'
-      })},
+      {test: /\.css$/, use: ['style-loader', 'css-loader']},
+      {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
       {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']}
     ]
   },
@@ -31,6 +24,7 @@ module.exports = {
     compress: true,
     port: 8080,
     stats: 'errors-only',
+    hot: true,
     open: true // 启动后自动打开浏览器窗口
   },
   plugins: [
@@ -38,6 +32,7 @@ module.exports = {
       filename:  (getPath) => {
         return getPath('css/[name].css').replace('css/js', 'css');
       },
+      disable: true,
       allChunks: true
     }),
     new HtmlWebpackPlugin({
@@ -56,6 +51,8 @@ module.exports = {
       filename: 'contact.html',
       chunks: ['contact'],
       template: './src/contact.html'
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
   ]
 }
