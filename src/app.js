@@ -1,3 +1,5 @@
 import './main.scss'
 import './app.css'
-console.log('hello from webpack-dev-server!')
+import Bar from './component/bar'
+let bar = new Bar();
+bar.init();
