@@ -755,14 +755,14 @@ npm i -D file-loader
 ```
 然后你就可以像往常一样随便的引入图片！
 在html中要按如下使用：
-```
+``` html
 <img src="<%= require('./img/bg.jpg')%>" alt="">
 ```
 ```
 npm i -D image-webpack-loader
 
 ```
-```
+``` javascript
 {
   test: /\.(png|jpe?g|svg|gif|webp)$/,
   use: [
@@ -773,3 +773,15 @@ npm i -D image-webpack-loader
 }
 ```
 具体参考：[https://www.npmjs.com/package/image-webpack-loader](https://www.npmjs.com/package/image-webpack-loader)
+#### 11、babel的使用
+``` bash
+npm i -D babel babel-preset-es2015 babel-loader babel-core
+```
+``` javascript
+//add
+{
+  test: /\.js$/,
+  use: 'babel-loader',
+  exclude: /node_modules/
+},
+```

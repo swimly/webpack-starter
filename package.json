@@ -20,6 +20,10 @@
   },
   "homepage": "https://github.com/swimly/webpack-starter#readme",
   "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.0",
     "cross-env": "^3.2.4",
     "css-loader": "^0.27.3",
     "extract-text-webpack-plugin": "^2.1.0",

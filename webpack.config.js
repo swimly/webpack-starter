@@ -29,9 +29,23 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.css$/, use: cssConfig},
-      {test: /\.scss$/, use: scssConfig},
-      {test: /\.pug$/, use: ['html-loader', 'pug-html-loader']},
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader'
+      },
+      {
+        test: /\.css$/,
+        use: cssConfig
+      },
+      {
+        test: /\.scss$/,
+        use: scssConfig
+      },
+      {
+        test: /\.pug$/,
+        use: ['html-loader', 'pug-html-loader']
+      },
       {
         test: /\.(png|jpe?g|svg|gif|webp)$/,
         use: [
