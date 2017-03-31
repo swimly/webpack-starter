@@ -785,3 +785,12 @@ npm i -D babel babel-preset-es2015 babel-loader babel-core
   exclude: /node_modules/
 },
 ```
+在根目录新增.babelrc文件
+``` javascript
+{
+  "presets": ["es2015"]
+}
+```
+现在我们就可以肆无忌惮的写es6的语法了！
+
+具体参考：[http://babeljs.io/docs/setup/#installation](http://babeljs.io/docs/setup/#installation)
